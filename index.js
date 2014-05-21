@@ -1,18 +1,24 @@
 var http=require('http');
 
 var myexpress=function(){
-	var app=function(req, res){
-		app.handle(req, res);
+	var app=function(req, res, out){
+		app.handle(req, res, out);
 	}
 	app.stack=[];
 
-	app.handle = function (req, res){
+	app.handle = function (req, res,out){
 		var index=0;
 		
 		var next = function(error){
 			
 			var middleware=app.stack[index++];
 			if (!middleware) {
+
+				if(out){
+					return out(error);
+				}
+
+
 				if (error){
 				res.statusCode=500;
 				res.end();
@@ -49,12 +55,13 @@ var myexpress=function(){
 	app.use = function(fun){
 		
 		app.stack.push(fun);
-
+		return app;
 	}
 	
 	var server=http.createServer(app);
 	app.listen=function(port, done){
 		return server.listen(port, done);
+
 	}
 
 	
