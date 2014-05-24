@@ -29,12 +29,22 @@ var myexpress=function(){
 				return;
 			}
 			try{
-				if (middleware.length <4){
-					middleware(req, res, next);
+				if (middleware.handle.length <4){
+					if(middleware.match(req.url)){
+							middleware.handle(req, res, next);
+						}
+						else{
+							next();
+						}
 				}
 				if(error){
-					if (middleware.length==4){
-						middleware(error, req, res, next);
+					if (middleware.handle.length==4){
+						if(middleware.match(req.url)){
+							middleware.handle(error, req, res, next);
+						}
+						else{
+							next(error);
+						}
 					}
 					else{
 						next(error);
