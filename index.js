@@ -1,5 +1,5 @@
 var http=require('http');
-
+var Layer=require('./lib/layer');
 var myexpress=function(){
 	var app=function(req, res, out){
 		app.handle(req, res, out);
@@ -52,9 +52,15 @@ var myexpress=function(){
 
 	}
 
-	app.use = function(fun){
-		
-		app.stack.push(fun);
+	app.use = function(path, fun){
+		var layer;
+		if(typeof path!== 'function'){
+			layer=new Layer(path, fun);
+		}
+		else{
+			layer=new Layer("/",fun);
+		}
+		app.stack.push(layer);
 		return app;
 	}
 	
