@@ -29,6 +29,10 @@ var myexpress=function(){
 				return;
 			}
 			try{
+				req.params={};
+				var matchResult=middleware.match(req.url);
+				if (!matchResult) return next(error);
+				req.params=matchResult.params;
 				if (middleware.handle.length <4){
 					if(middleware.match(req.url)){
 							middleware.handle(req, res, next);
