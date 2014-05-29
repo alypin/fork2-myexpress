@@ -1,10 +1,18 @@
 var http=require('http');
 var Layer=require('./lib/layer');
+var makeRoute=require('./lib/route');
 var myexpress=function(){
 	var app=function(req, res, out){
 		app.handle(req, res, out);
 	}
 	app.stack=[];
+
+	app.get= function(path, handler){
+		var fun=makeRoute("get", handler);
+		var layer = new Layer(path, fun, true);
+		return app.stack.push(layer);
+
+	}
 
 	app.handle = function (req, res,out){
 		var index=0;
@@ -69,10 +77,10 @@ var myexpress=function(){
 	app.use = function(path, fun){
 		var layer;
 		if(typeof path!== 'function'){
-			layer=new Layer(path, fun);
+			layer=new Layer(path, fun,false);
 		}
 		else{
-			layer=new Layer("/",fun);
+			layer=new Layer("/",fun, false);
 		}
 		app.stack.push(layer);
 		return app;
