@@ -1,18 +1,14 @@
 var http=require('http');
 var Layer=require('./lib/layer');
 var makeRoute=require('./lib/route');
+var methods = require('methods');
 var myexpress=function(){
 	var app=function(req, res, out){
 		app.handle(req, res, out);
 	}
 	app.stack=[];
 
-	app.get= function(path, handler){
-		var fun=makeRoute("get", handler);
-		var layer = new Layer(path, fun, true);
-		return app.stack.push(layer);
-
-	}
+	
 
 	app.handle = function (req, res,out){
 		var index=0;
@@ -92,7 +88,13 @@ var myexpress=function(){
 
 	}
 
-	
+	methods.forEach(function(method){
+		app[method]=function(path, handler){
+			var fun=makeRoute(method, handler);
+			var layer=new Layer(path, fun, true);
+			return app.stack.push(layer);
+		}
+	})	
 
 	return app;
 }

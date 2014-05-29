@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "supertest": "~0.12.1",
-    "chai": "~1.9.1"
+    "chai": "~1.9.1",
+    "methods": "~0.1.0"
   }
 }
